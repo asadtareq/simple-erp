@@ -1,0 +1,124 @@
+{% include 'header.html' %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Dashboard - Inventory Management System</title>
+  </head>
+  <body>
+  
+  {% block content %}
+
+<div class="container">
+   <div class="row">
+       <div class="col-sm-4"><br>
+           <div class="card">
+               <div class="container"><br>
+                   <h3>Add Item</h3><hr>
+                    {% for message in messages %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                      <strong>New Item Add Success</strong>
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                   <form method="POST" action="{% url 'add_product' %}">
+                      {% csrf_token %}
+                       <div class="form-group">
+                           <label class="form-label">Name</label>
+                           <input type='text' class="form-control" name='name'  required>
+                       </div>
+                       <p id="np"></p>
+                       <div class="form-group">
+                           <label class="form-label">Quantity</label>
+                           <input type='number' id="quan" class="form-control" name='quantity' onkeyup="amountcal();" required>
+                       </div>
+                       <div class="form-group">
+                           <label class="form-label">Price</label>
+                           <input type='number' id="prc" class="form-control" name='price' onkeyup="amountcal();" required>
+                       </div>
+                       <div class="form-group">
+                           <label class="form-label">Amount</label>
+                           <input type='number' id="totalam" class="form-control" name='amount' >
+                       </div><br>
+                       <button type="submit" class="btn btn-success" value="Add Item" ><i class="bi bi-plus-circle-fill"></i> Add Item</button>
+                   </form><br>
+               </div>
+           </div>
+       </div>
+       <div class="col-sm-8"><br>
+           <div class="card">
+               <div class="container"><br>
+                  <h3>Item Details</h3><hr>
+                   <table class="table table-hover table-bordered">
+                       <th>SI</th>
+                       <th>Name</th>
+                       <th>Quantity</th>
+                       <th>Price</th>
+                       <th>Amount</th>
+                       <th colspan="2"><center>Action</center></th>
+                         {% if sp %}
+                            
+                                 {% for x in sp %}
+                                
+                               <tr>
+                                   <td>{{ forloop.counter}}</td>
+                                   <td>{{ x.name }}</td>
+                                   <td>{{ x.quantity }}</td>
+                                   <td>{{ x.price }}</td>
+                                   <td id="totalval">{{x.amount}}</td>
+                                   {% if user.email == 'admin@admin.com' %}
+                                   <th><a href='{% url 'edit_product' x.id %}' class="btn btn-success">EDIT</a> &nbsp <a href='{% url 'delete_product' x.id %}' class="btn btn-danger" type='submit'>DELETE</a></th>
+                                   {% endif %}
+                               </tr>
+                               
+                               {% endfor %}
+      
+                        {% else %}
+                       <p><center>No Record Found</center></p>
+                       {% endif %}
+                   </table>
+               </div>
+           </div>
+       </div>
+   </div>
+</div>
+ 
+
+
+ <script>
+        function amountcal(){
+            var q = document.getElementById("quan").value;
+            var p = document.getElementById("prc").value;
+            var gtotal = parseFloat(q)*parseFloat(p);
+            document.getElementById("totalam").value = gtotal;
+           }
+       
+      </script>
+ 
+
+ 
+   {% endblock content %}
+
+ {% include 'footer.html' %}
+     
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+<style>
+    body{background-color: whitesmoke}    
+</style>
+  </body>
+</html>
